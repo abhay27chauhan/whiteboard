@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Whiteboard</title>
+</head>
+<body>
+    <div class="btn-container">
+        <div class="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+    <div class="tool-panel animate__animated animate__backInDown">
+        <div class="tool active">
+            <img src="./icons/Black_Pencil.svg" alt="pencil" class="tool-img pencil">
+            <div class="pencil-options">
+                <div class="pencil-slider">
+                    <input type="range" min="2" max="40" value="2" >
+                </div>
+                <div class="pencil-color">
+                    <div class="blue"></div>
+                    <div class="red" ></div>
+                    <div class="black"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tool">
+            <img src="./icons/Eraser.svg" alt="eraser" class="tool-img eraser">
+            <div class="eraser-options">
+                <div class="eraser-slider">
+                    <input type="range" min="4" max="40" value="4">
+                </div>
+            </div>
+        </div>
+        <div class="tool">
+            <img src="./icons/stickynotes.svg" alt="sticky" class="tool-img sticky">
+        </div>
+        <div class="tool">
+            <img src="./icons/upload.svg" alt="upload" class="tool-img upload">
+        </div>
+        <div class="tool">
+            <img src="./icons/download.svg" alt="download" class="tool-img download">
+        </div>
+        <div class="tool">
+            <img src="./icons/undo.svg" alt="undo" class="tool-img undo">
+        </div>
+        <div class="tool">
+            <img src="./icons/redo.svg" alt="redo" class="tool-img redo">
+        </div>
+        <div class="tool">
+            <img src="./icons/zoom_in.png" alt="zoomin" class="tool-img zoomin">
+        </div>
+        <div class="tool">
+            <img src="./icons/zoom_out.png" alt="zoomout" class="tool-img zoomout">
+        </div>
+    </div>
+    <div class="sheet-container">
+        <div class="add-sheet_btn-container">
+            <i class="fas fa-plus-circle"></i>
+        </div>
+        <div class="sheet-list">
+            <div class="sheet active" idx="0">Sheet 1</div>
+        </div>
+    </div>
+    <button class="gallery-button">
+        <i class="fas fa-image"></i>
+    </button>
+    <canvas class="board"></canvas>
+    <script>
+        let board = document.querySelector(".board");
+
+        board.height = window.innerHeight;
+        board.width = window.innerWidth;
+        
+        let tool = board.getContext("2d");
+    </script>
+    <script>
+        let galleryBtn = document.querySelector(".gallery-button");
+
+        galleryBtn.addEventListener("click", function () {
+            location.assign("gallery.html");
+        })
+    </script>
+    <script src="hamburger.js"></script>
+    <script src="sticky.js"></script>
+    <script src="script.js"></script>
+    <script src="draw.js"></script>
+    <script src="dbScript.js"></script>
+    <script src="download.js"></script>
+</body>
+</html>
