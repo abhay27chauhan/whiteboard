@@ -311,3 +311,13 @@ body{
       transform: scale(1.1);
   }
 }
+
+#fileInput{
+  display: none;
+}
+
+.upload-img{
+  height: 100%;
+  width: 100%;
+  border-bottom-left-radius: 15px;
+}
