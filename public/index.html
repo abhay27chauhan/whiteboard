@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <title>Whiteboard</title>
 </head>
 <body>
@@ -76,7 +76,10 @@
         <i class="fas fa-image"></i>
     </button>
     <canvas class="board"></canvas>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
+        const socket = io.connect("http://localhost:3000/");
+
         let board = document.querySelector(".board");
 
         board.height = window.innerHeight;
@@ -91,12 +94,14 @@
             location.assign("gallery.html");
         })
     </script>
-    <script src="hamburger.js"></script>
-    <script src="sticky.js"></script>
-    <script src="script.js"></script>
-    <script src="draw.js"></script>
-    <script src="dbScript.js"></script>
-    <script src="download.js"></script>
-    <script src="upload.js"></script>
+    <script src="./js/hamburger.js"></script>
+    <script src="./js/sticky.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/draw.js"></script>
+    <script src="./js/dbScript.js"></script>
+    <script src="./js/download.js"></script>
+    <script src="./js/upload.js"></script>
+    <script src="./js/zoom.js"></script>
+    <script src="./js/reciever.js"></script>
 </body>
 </html>

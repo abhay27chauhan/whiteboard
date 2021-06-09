@@ -5,6 +5,12 @@ let toolPanel = document.querySelector(".tool-panel");
 let btnFlag = false;
 
 hamburgerBtn.addEventListener("click", function(){
+    handleHamburger()
+
+    socket.emit("hamburger")
+})
+
+function handleHamburger(){
     if(btnFlag == false){
         bars[0].classList.add("top");
         bars[1].classList.add("middle");
@@ -19,6 +25,5 @@ hamburgerBtn.addEventListener("click", function(){
 
         toolPanel.style.display = "none";
     }
-
     btnFlag = !btnFlag;
-})
+}

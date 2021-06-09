@@ -8,6 +8,8 @@ let eslider = document.querySelector(".eraser-slider input");
 let activeTool = "pencil";
 
 tool.lineWidth = 2;
+tool.lineCap = "round"
+tool.lineJoin = "round";
 
 let pencilToolSpecs = {
     lineWidth: 2,

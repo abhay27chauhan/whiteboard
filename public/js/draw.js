@@ -6,7 +6,6 @@ let redoBtn = document.querySelector(".redo");
 let undoBtn = document.querySelector(".undo");
 
 let isDown = false;
-tool.lineCap = "round"
 let sheetDB = [];
 let drawObject;
 let interval = null;
@@ -84,12 +83,14 @@ pslider.addEventListener("change", function(){
     let value = pslider.value;
     pencilToolSpecs.lineWidth = value;
     tool.lineWidth = value;
+    socket.emit("pencilSpecs", pencilToolSpecs)
 })
 
 eslider.addEventListener("change", function(){
     let value = eslider.value;
     eraserToolSpecs.lineWidth = value;
     tool.lineWidth = value;
+    socket.emit("eraserSpecs", eraserToolSpecs)
 })
 
 for(let i=0; i<pColorOptions.length; i++){
@@ -97,6 +98,7 @@ for(let i=0; i<pColorOptions.length; i++){
         let color = pColorOptions[i].getAttribute("class");
         pencilToolSpecs.color = color;
         tool.strokeStyle = color;
+        socket.emit("pencilSpecs", pencilToolSpecs)
     })
 }
 
@@ -117,6 +119,7 @@ board.addEventListener("mousedown", function(e){
             type: "begin"
         }
 
+        socket.emit("mousedown", point);
         drawObject.undoStack.push(point);
         localStorage.setItem("sheetDB", JSON.stringify(sheetDB));
     }
@@ -140,6 +143,7 @@ board.addEventListener("mousemove", function(e){
                 type: "end"
             }
 
+            socket.emit("mouseup", point);
             drawObject.undoStack.push(point);
             localStorage.setItem("sheetDB", JSON.stringify(sheetDB));
         }   
@@ -152,10 +156,7 @@ board.addEventListener("mouseup", function(){
 
 undoBtn.addEventListener("mousedown", function(){
     interval = window.setInterval(function(){
-        if(drawObject.undoStack.length !== 0){
-            drawObject.redoStack.push(drawObject.undoStack.pop());
-            redrawAll();
-        }
+        if(undoMaker()) socket.emit("undo");
     }, 50)
 })
 
@@ -166,10 +167,7 @@ undoBtn.addEventListener("mouseup", function(){
 
 redoBtn.addEventListener("mousedown", function(){
     interval = window.setInterval(function(){
-        if(drawObject.redoStack.length !== 0){
-            drawObject.undoStack.push(drawObject.redoStack.pop());
-            redrawAll();
-        }
+        if(redoMaker()) socket.emit("redo");
     }, 50)
 })
 
@@ -198,4 +196,26 @@ function redrawAll(){
             tool.stroke()
         }
     }
+}
+
+function undoMaker(){
+    if(drawObject.undoStack.length !== 0){
+        drawObject.redoStack.push(drawObject.undoStack.pop());
+        redrawAll();
+
+        return true;
+    }
+
+    return false;
+}
+
+function redoMaker(){
+    if(drawObject.redoStack.length !== 0){
+        drawObject.undoStack.push(drawObject.redoStack.pop());
+        redrawAll();
+
+        return true;
+    }
+
+    return false;
 }
