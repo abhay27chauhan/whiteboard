@@ -12,6 +12,15 @@ socket.on("onEraserSpecs", function(eraserSpecsObj) {
     eslider.value = eraserSpecsObj.lineWidth;
 });
 
+socket.on("onToolChange", function(toolOption){
+    let toolName = document.querySelector(`.${toolOption}`);
+    let parentclass = toolName.parentNode.classList[0];
+    let allTools = document.querySelectorAll(`.${parentclass}`)
+    allTools.forEach(tool => tool.classList.remove("active"));
+    toolName.parentNode.classList.add("active");
+    handleToolChange(toolOption)
+})
+
 socket.on("onhamburger", function(){
     handleHamburger();
 })
@@ -23,6 +32,9 @@ socket.on("onmousedown", function(pointObj){
     tool.globalCompositeOperation = effect
     tool.beginPath()
     tool.moveTo(x,y)
+
+    drawObject.undoStack.push(pointObj);
+    localStorage.setItem("sheetDB", JSON.stringify(sheetDB));
 })
 
 socket.on("onmouseup", function(pointObj){
@@ -32,6 +44,9 @@ socket.on("onmouseup", function(pointObj){
     tool.globalCompositeOperation = effect
     tool.lineTo(x,y)
     tool.stroke()
+
+    drawObject.undoStack.push(pointObj);
+    localStorage.setItem("sheetDB", JSON.stringify(sheetDB));
 })
 
 socket.on("onundo", function(){

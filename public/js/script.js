@@ -28,6 +28,11 @@ toolPanel.addEventListener("mousedown", function(e){
     }
 
     let toolOption = e.target.getAttribute("alt")
+    handleToolChange(toolOption)
+    socket.emit("handleToolChange", toolOption);
+})
+
+function handleToolChange(toolOption){
     if(toolOption == "pencil"){
         if(activeTool == "pencil"){
             pencilOptions.style.display = "flex";
@@ -80,4 +85,4 @@ toolPanel.addEventListener("mousedown", function(e){
         eraserOptions.style.display = "none";
         activeTool = "zoomout" 
     }
-})
+}

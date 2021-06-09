@@ -103,6 +103,8 @@ for(let i=0; i<pColorOptions.length; i++){
 }
 
 board.addEventListener("mousedown", function(e){
+    pencilOptions.style.display = "none";
+    eraserOptions.style.display = "none";
     if(activeTool == "pencil" || activeTool == "eraser"){
         let x = e.clientX;
         let y = e.clientY;

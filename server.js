@@ -18,6 +18,10 @@ io.on("connection", function(socket){
         socket.broadcast.emit("onEraserSpecs", eraserSpecsObj);
     });
 
+    socket.on("handleToolChange", function(tool){
+        socket.broadcast.emit("onToolChange", tool)
+    })
+
     socket.on("hamburger", function(){
         socket.broadcast.emit("onhamburger");
     })
