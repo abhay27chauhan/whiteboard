@@ -64,6 +64,7 @@
             <img src="./icons/zoom_out.png" alt="zoomout" class="tool-img zoomout">
         </div>
     </div>
+    <div id="video-grid"></div>
     <div class="sheet-container">
         <div class="add-sheet_btn-container">
             <i class="fas fa-plus-circle"></i>
@@ -76,9 +77,13 @@
         <i class="fas fa-image"></i>
     </button>
     <canvas class="board"></canvas>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
-        const socket = io.connect("http://localhost:3000/");
+        const ROOM_ID = "<%= roomId %>"
+    </script>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('/');
 
         let board = document.querySelector(".board");
 
@@ -94,6 +99,7 @@
             location.assign("gallery.html");
         })
     </script>
+    <script src="./js/connectPeer.js"></script>
     <script src="./js/hamburger.js"></script>
     <script src="./js/sticky.js"></script>
     <script src="./js/script.js"></script>

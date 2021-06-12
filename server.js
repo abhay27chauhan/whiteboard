@@ -1,13 +1,24 @@
 const express = require("express");
 const app = express();
-const server = require("http").createServer(app)
+const server = require("http").Server(app)
 const io = require("socket.io")(server);
+const { ExpressPeerServer } = require('peer');
+const peerServer = ExpressPeerServer(server, {
+  debug: true
+});
+const {v4: uuidV4} = require("uuid");
 
+app.use('/peerjs', peerServer);
+app.set('view engine', 'ejs');
 app.use(express.static("public"))
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.redirect(`/${uuidV4()}`)
 });
+
+app.get("/:room", (req, res) => {
+    res.render('index', {roomId: req.params.room})
+})
 
 io.on("connection", function(socket){
     socket.on("pencilSpecs", function(pencilSpecsObj) {
@@ -40,6 +51,17 @@ io.on("connection", function(socket){
 
     socket.on("redo", function(){
         socket.broadcast.emit("onredo");
+    })
+
+    socket.on('join-room', (roomId, userId) => {
+        // allowing current socket to join the room
+        socket.join(roomId)
+        // sending message to the other users in the room, current user is connected to
+        socket.to(roomId).broadcast.emit('user-connected', userId)
+
+        socket.on('disconnect', () => {
+            socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        })
     })
 })
 
