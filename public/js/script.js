@@ -22,14 +22,17 @@ let eraserToolSpecs = {
 };
 
 toolPanel.addEventListener("mousedown", function(e){
-    if(e.target.parentNode.classList[0] == "tool"){
+    let parentElem = e.target.parentNode;
+    if(parentElem.classList[0] == "tool" && (e.target.classList[1] == "pencil" || e.target.classList[1] == "eraser" || e.target.classList[1] == "sticky")){
         allTools.forEach(tool => tool.classList.remove("active"));
-        e.target.parentNode.classList.add("active");
+        parentElem.classList.add("active");
     }
 
-    let toolOption = e.target.getAttribute("alt")
-    handleToolChange(toolOption)
-    socket.emit("handleToolChange", toolOption);
+    let toolOption = e.target.classList[1]
+    if(toolOption == "pencil" || toolOption == "eraser" || toolOption == "sticky"){
+        handleToolChange(toolOption)
+        socket.emit("handleToolChange", toolOption);
+    }
 })
 
 function handleToolChange(toolOption){
@@ -60,29 +63,5 @@ function handleToolChange(toolOption){
         eraserOptions.style.display = "none";
         activeTool = "sticky"
         createSticky();
-    }else if(toolOption == "upload"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none";
-        activeTool = "upload"
-    }else if(toolOption == "download"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none"; 
-        activeTool = "download"       
-    }else if(toolOption == "redo"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none";
-        activeTool = "redo" 
-    }else if(toolOption == "undo"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none";
-        activeTool = "undo" 
-    }else if(toolOption == "zoomin"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none";
-        activeTool = "zoomin" 
-    }else if(toolOption == "zoomout"){
-        pencilOptions.style.display = "none";
-        eraserOptions.style.display = "none";
-        activeTool = "zoomout" 
     }
 }
