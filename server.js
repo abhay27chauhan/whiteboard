@@ -59,6 +59,10 @@ io.on("connection", function(socket){
         // sending message to the other users in the room, current user is connected to
         socket.to(roomId).broadcast.emit('user-connected', userId)
 
+        socket.on("message", value => {
+            socket.to(roomId).broadcast.emit('create-message', value);
+        })
+
         socket.on('disconnect', () => {
             socket.to(roomId).broadcast.emit('user-disconnected', userId)
         })

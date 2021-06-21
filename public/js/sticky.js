@@ -36,7 +36,6 @@ function createSticky(){
 }
 
 function handleMouseDown(event){
-
     let stickyPad = event.currentTarget;
     
     let shiftX = event.clientX - stickyPad.getBoundingClientRect().left;
