@@ -11,6 +11,7 @@ const peer = new Peer(undefined, {
 })
 // peer server is going to take all of the webrtc information of a user and generate a unique client id for that user, which can be used to connect with other peers on the network
 
+let uid;
 let myScreen = null;
 let myVideoStream;
 const mypeers = {}
@@ -33,17 +34,18 @@ navigator.mediaDevices.getUserMedia({
         })
     })
 
-    socket.on('user-connected', userId => {
-        connectToNewUser(userId, stream);
+    socket.on('user-connected', userObj => {
+        connectToNewUser(userObj.userId, stream);
     })
 })
 
-socket.on('user-disconnected', userId => {
-  if (mypeers[userId]) mypeers[userId].close()
+socket.on('user-disconnected', userObj => {
+  if (mypeers[userObj.userId]) mypeers[userObj.userId].close()
 })
 
 // as soon as we are connected to the peer server and get back an id, send that id,along with room_id to our server for setting up connection
 peer.on('open', id => {
+    uid = id;
     socket.emit('join-room', ROOM_ID, id);
 })
 

@@ -20,51 +20,68 @@ app.get("/:room", (req, res) => {
     res.render('index', {roomId: req.params.room})
 })
 
+let numusers = 0;
+
 io.on("connection", function(socket){
-    socket.on("pencilSpecs", function(pencilSpecsObj) {
-        socket.broadcast.emit("onPencilSpecs", pencilSpecsObj);
-    });
-
-    socket.on("eraserSpecs", function(eraserSpecsObj) {
-        socket.broadcast.emit("onEraserSpecs", eraserSpecsObj);
-    });
-
-    socket.on("handleToolChange", function(tool){
-        socket.broadcast.emit("onToolChange", tool)
-    })
-
-    socket.on("hamburger", function(){
-        socket.broadcast.emit("onhamburger");
-    })
-
-    socket.on("mousedown", function(pointObj){
-        socket.broadcast.emit("onmousedown", pointObj);
-    })
-
-    socket.on("mouseup", function(pointObj){
-        socket.broadcast.emit("onmouseup", pointObj);
-    })
-
-    socket.on("undo", function(){
-        socket.broadcast.emit("onundo");
-    })
-
-    socket.on("redo", function(){
-        socket.broadcast.emit("onredo");
-    })
 
     socket.on('join-room', (roomId, userId) => {
+        ++numusers
         // allowing current socket to join the room
         socket.join(roomId)
         // sending message to the other users in the room, current user is connected to
-        socket.to(roomId).broadcast.emit('user-connected', userId)
+        socket.to(roomId).broadcast.emit('user-connected', {userId, numusers})
+
+        socket.on("pencilSpecs", function(pencilSpecsObj) {
+            socket.to(roomId).broadcast.emit("onPencilSpecs", pencilSpecsObj);
+        });
+
+        socket.on("eraserSpecs", function(eraserSpecsObj) {
+            socket.to(roomId).broadcast.emit("onEraserSpecs", eraserSpecsObj);
+        });
+
+        socket.on("handleToolChange", function(tool){
+            socket.to(roomId).broadcast.emit("onToolChange", tool)
+        })
+
+        socket.on("hamburger", function(){
+            socket.to(roomId).broadcast.emit("onhamburger");
+        })
+
+        socket.on("mousedown", function(pointObj){
+            socket.to(roomId).broadcast.emit("onmousedown", pointObj);
+        })
+
+        socket.on("mouseup", function(pointObj){
+            socket.to(roomId).broadcast.emit("onmouseup", pointObj);
+        })
+
+        socket.on("undo", function(){
+            socket.to(roomId).broadcast.emit("onundo");
+        })
+
+        socket.on("redo", function(){
+            socket.to(roomId).broadcast.emit("onredo");
+        })
+
+        socket.on("show count", (data) => {
+            socket.to(roomId).broadcast.emit("show count", data);
+        })
 
         socket.on("message", value => {
             socket.to(roomId).broadcast.emit('create-message', value);
         })
 
+        socket.on("typing", () => {
+            socket.to(roomId).broadcast.emit('typing', {userId});
+        })
+
+        socket.on("stop typing", () => {
+            socket.to(roomId).broadcast.emit('stop typing', { userId });
+        })
+
         socket.on('disconnect', () => {
-            socket.to(roomId).broadcast.emit('user-disconnected', userId)
+            --numusers
+            socket.to(roomId).broadcast.emit('user-disconnected', {userId, numusers})
         })
     })
 })

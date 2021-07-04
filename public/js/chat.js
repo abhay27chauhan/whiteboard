@@ -2,6 +2,15 @@ let chatBtn = document.querySelector(".chat-button");
 let chatWindow = document.querySelector(".main__right");
 let textValue = document.querySelector("#chat_message");
 let chatWindowFlag = false;
+const TYPING_TIMER_LENGTH = 400; // ms
+let typing = false;
+let lastTypingTime;
+const COLORS = [
+    '#e21400', '#91580f', '#f8a700', '#f78b00',
+    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
+    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
+];
+let isPrinted = false
 
 chatBtn.addEventListener("click", function(){
     if(chatWindowFlag == false){
@@ -20,8 +29,102 @@ textValue.addEventListener("keydown", function(e){
         socket.emit("message", textValue.value);
         textValue.value = "";
     }
+    updateTyping()
 })
 
 socket.on("create-message", function(value){
-    document.querySelector("ul").innerHTML += `<li class="message"><b>user</b><br/>${value}</li>`;
+    document.querySelector("ul").innerHTML += `<li class="message" style="display: list-item;"><b>user</b><br/>${value}</li>`;
 })
+
+socket.on("user-connected", data => {
+    let message = `${data.userId} joined`
+    log(message);
+    socket.emit("show count", data)
+    addParticipantsMessage(data);
+})
+
+socket.on("show count", data => {
+    if(data.userId == uid && !isPrinted){
+        isPrinted = true;
+        addParticipantsMessage(data);
+    }
+})
+
+socket.on("user-disconnected", data => {
+    let message = `${data.userId} left`
+    log(message);
+    addParticipantsMessage(data);
+})
+
+socket.on('typing', (data) => {
+    addChatTyping(data);
+});
+
+const addChatTyping = data => {
+    data.typing = true;
+    data.message = 'is typing';
+    addChatMessage(data);
+}
+
+const addChatMessage = (data) => {
+    // Don't fade the message in if there is an 'X was typing'
+
+    let spanUserElem = document.createElement("span");
+    spanUserElem.setAttribute("class", "username");
+    spanUserElem.innerHTML += `${data.userId}`
+    spanUserElem.style.color = `${getUserColor()}`
+
+    let spanMessageElem = document.createElement("span");
+    spanMessageElem.setAttribute("class", "messageBody");
+    spanMessageElem.innerHTML += `${data.message}`
+
+    const typingClass = data.typing ? 'typing' : '';
+    const messageDiv =document.createElement("li");
+    messageDiv.setAttribute("class", "message")
+    messageDiv.classList.add(typingClass);
+    messageDiv.appendChild(spanUserElem)
+    messageDiv.appendChild(spanMessageElem);
+
+    addMessageElement(messageDiv);
+}
+
+const addMessageElement = (messageElem) => {
+    document.querySelector("ul").appendChild(messageElem);
+}
+
+// Gets the color 
+const getUserColor = () => {
+    const randomColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+    return randomColor;
+}
+
+const updateTyping = () => {
+    if (!typing) {
+        typing = true;
+        socket.emit('typing');
+    }
+    lastTypingTime = (new Date()).getTime();
+
+    setTimeout(() => {
+        const typingTimer = (new Date()).getTime();
+        const timeDiff = typingTimer - lastTypingTime;
+        if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
+            socket.emit('stop typing');
+            typing = false;
+        }
+    }, TYPING_TIMER_LENGTH);
+  }
+
+const addParticipantsMessage = (data) => {
+    let message = '';
+    if (data.numusers === 1) {
+      message += `there's 1 participant`;
+    } else {
+      message += `there are ${data.numusers} participants`;
+    }
+    log(message);
+}
+
+const log = (message) => {
+    document.querySelector("ul").innerHTML += `<li class="log" style="display: list-item;">${message}</li>`;
+}
