@@ -6,8 +6,8 @@ const videoToggleBtn = document.querySelector(".user-video");
 // first param is undefined because i want the server to take care of generating a new id
 const peer = new Peer(undefined, {
     path: '/peerjs',
-    host: '/',
-    port: '3000'
+    host: 'ac-whiteboard.herokuapp.com',
+    port: '443'
 })
 // peer server is going to take all of the webrtc information of a user and generate a unique client id for that user, which can be used to connect with other peers on the network
 
