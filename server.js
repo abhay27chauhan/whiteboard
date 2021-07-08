@@ -67,8 +67,8 @@ io.on("connection", function(socket){
             socket.to(roomId).broadcast.emit("show count", data);
         })
 
-        socket.on("message", value => {
-            socket.to(roomId).broadcast.emit('create-message', value);
+        socket.on("message", message => {
+            socket.to(roomId).broadcast.emit('create-message', { userId, message});
         })
 
         socket.on("typing", () => {

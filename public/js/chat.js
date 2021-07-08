@@ -26,14 +26,18 @@ chatWindow.addEventListener("mousedown", handleMouseDown);
 
 textValue.addEventListener("keydown", function(e){
     if(e.key == "Enter" && textValue.value.trim() !== ""){
-        socket.emit("message", textValue.value);
+        console.log("inside")
+        sendMessage(textValue.value);
         textValue.value = "";
+        socket.emit("stop typing")
+        typing = false;
+    }else{
+        updateTyping()
     }
-    updateTyping()
 })
 
-socket.on("create-message", function(value){
-    document.querySelector("ul").innerHTML += `<li class="message" style="display: list-item;"><b>user</b><br/>${value}</li>`;
+socket.on("create-message", function(data){
+    addChatMessage(data, true);
 })
 
 socket.on("user-connected", data => {
@@ -60,13 +64,31 @@ socket.on('typing', (data) => {
     addChatTyping(data);
 });
 
+socket.on('stop typing', (data) => {
+    removeChatTyping(data);
+});
+
+const sendMessage = (message) => {
+    if (message) {
+      addChatMessage({ userId: uid, message }, true);
+      // tell server to execute 'new message' and send along one parameter
+      socket.emit("message", message);
+    }
+}
+
+const removeChatTyping = (data) => {
+    let liElem = document.querySelector(`li[data-id='${data.userId}']`)
+    console.log(liElem);
+    liElem.remove();
+}
+
 const addChatTyping = data => {
     data.typing = true;
     data.message = 'is typing';
     addChatMessage(data);
 }
 
-const addChatMessage = (data) => {
+const addChatMessage = (data, option) => {
     // Don't fade the message in if there is an 'X was typing'
 
     let spanUserElem = document.createElement("span");
@@ -78,9 +100,12 @@ const addChatMessage = (data) => {
     spanMessageElem.setAttribute("class", "messageBody");
     spanMessageElem.innerHTML += `${data.message}`
 
-    const typingClass = data.typing ? 'typing' : '';
+    const typingClass = data.typing ? 'typing' : 'text-message';
     const messageDiv =document.createElement("li");
     messageDiv.setAttribute("class", "message")
+    if(!option){
+        messageDiv.setAttribute("data-id", data.userId)
+    }
     messageDiv.classList.add(typingClass);
     messageDiv.appendChild(spanUserElem)
     messageDiv.appendChild(spanMessageElem);

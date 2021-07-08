@@ -515,3 +515,7 @@ li{
 .messageBody{
   color: gray;
 }
+
+.text-message{
+  margin: 0.5rem;
+}
