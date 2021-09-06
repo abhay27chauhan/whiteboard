@@ -11,16 +11,9 @@
 
 <body>
     <div class="media-container"></div>
-    <button class="gallery-back">BACK</button>
 
-    <script src="dbScript.js"></script>
+    <script src="./js/dbScript.js"></script>
     <script>
-        let galleryBackBtn = document.querySelector(".gallery-back");
-
-        galleryBackBtn.addEventListener("click", function () {
-            location.assign("index.html");
-        })
-
         setTimeout(function () {
             viewMedia();
         }, 100);

@@ -319,6 +319,9 @@ body{
   height: 3.5rem;
   width: 3.5rem;
   position: fixed;
+  color: black;
+  padding-top: 0.55rem;
+  text-align: center;
   bottom: 4%;
   right: 61px;
   border: 1px solid;

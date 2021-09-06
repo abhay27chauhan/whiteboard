@@ -104,9 +104,9 @@
     <button class="chat-button">
         <i class="fas fa-comment-alt"></i>
     </button>
-    <button class="gallery-button">
+    <a href="/gallery" class="gallery-button">
         <i class="fas fa-image"></i>
-    </button>
+    </a>
     <canvas class="board"></canvas>
     <script>
         const ROOM_ID = "<%= roomId %>"
@@ -122,13 +122,6 @@
         board.width = window.innerWidth;
         
         let tool = board.getContext("2d");
-    </script>
-    <script>
-        let galleryBtn = document.querySelector(".gallery-button");
-
-        galleryBtn.addEventListener("click", function () {
-            location.assign("gallery.html");
-        })
     </script>
     <script src="./js/screenCapture.js"></script>
     <script src="./js/connectPeer.js"></script>
